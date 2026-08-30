@@ -1,4 +1,0 @@
-[run]
-omit =
-    src/chat.py
-    src/search.py

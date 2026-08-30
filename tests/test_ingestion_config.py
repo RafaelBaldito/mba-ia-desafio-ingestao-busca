@@ -2,7 +2,9 @@ from pathlib import Path
 
 import pytest
 
+import chat
 import src.ingest as ingest
+import search
 from src.ingestion_config import (
     APPROVED_EMBEDDING_MODEL,
     IngestionConfigurationError,
@@ -89,3 +91,14 @@ def test_dotenv_is_loaded_at_process_boundary(monkeypatch, tmp_path):
 
 def test_existing_ingest_entrypoint_scaffold_is_importable():
     assert ingest.ingest_pdf() is None
+
+
+def test_search_placeholder_preserves_wave_two_boundary():
+    assert search.search_prompt() is None
+    assert search.search_prompt("question") is None
+
+
+def test_chat_reports_unavailable_search(monkeypatch, capsys):
+    monkeypatch.setattr(chat, "search_prompt", lambda: None)
+    chat.main()
+    assert "Não foi possível iniciar o chat" in capsys.readouterr().out
