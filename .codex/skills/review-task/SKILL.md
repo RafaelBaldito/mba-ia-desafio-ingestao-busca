@@ -337,7 +337,25 @@ On `BLOCKED`:
 
 Do not change unrelated task statuses.
 
-### 13. Produce the review result
+### 13. Persist a fix handoff
+
+When the outcome is `FIX_REQUIRED`, create a durable handoff for `fix-task`.
+
+- Create `<selected-task-parent>/reviews/TASK-XXX-REVIEW.md`. For example,
+  a selected `tasks/<wave-id>/TASK-XXX.md` produces
+  `tasks/<wave-id>/reviews/TASK-XXX-REVIEW.md`; a single-delivery task under
+  `tasks/` produces `tasks/reviews/TASK-XXX-REVIEW.md`.
+- Update the selected task's status to `FIX_REQUIRED` in the applicable task
+  index when that index exists.
+- Write the complete review-result format from this skill to the handoff file,
+  including executed validation evidence, each acceptance-criterion result,
+  and all structured findings. It must give `fix-task` sufficient context to
+  act without reconstructing the review.
+- Do not create a handoff artifact for `PASS`, `SPEC_CHANGE_REQUIRED`, or
+  `BLOCKED`. Do not commit or push review artifacts unless the user explicitly
+  asks for that action.
+
+### 14. Produce the review result
 
 Return a concise evidence-based report.
 
@@ -473,8 +491,8 @@ Return:
 
 For `PASS`, the Findings section may be omitted when no findings exist.
 
-Do not create a separate review artifact file unless the repository
-explicitly requires one.
+For `FIX_REQUIRED`, the required handoff artifact above is the exception to
+the normal rule against creating separate review artifacts.
 
 ## Validation
 
@@ -495,6 +513,8 @@ Before completing the review, verify:
 -   [ ] no code or tests were modified;
 -   [ ] no unrelated task was reviewed;
 -   [ ] no fix stage was started automatically.
+-   [ ] when `FIX_REQUIRED`, the handoff artifact and applicable task status
+      were updated without committing or pushing.
 
 ## Completion
 
