@@ -15,8 +15,8 @@ excluded.
 | TASK-001 | Establish Ingestion Configuration and Test Foundation | — | COMPLETED |
 | TASK-002 | Implement Deterministic PDF Loading and Chunking | TASK-001 | COMPLETED |
 | TASK-003 | Implement Embedding and pgVector Persistence Adapters | TASK-001, TASK-002 | IMPLEMENTED |
-| TASK-004 | Implement the Ingestion Orchestrator and CLI | TASK-001, TASK-002, TASK-003 | IMPLEMENTED |
-| TASK-005 | Add Isolated pgVector Integration and Opt-in Smoke Validation | TASK-004 | PENDING |
+| TASK-004 | Implement the Ingestion Orchestrator and CLI | TASK-001, TASK-002, TASK-003 | COMPLETED |
+| TASK-005 | Add Isolated pgVector Integration and Opt-in Smoke Validation | TASK-004 | IMPLEMENTED |
 
 ## Coverage
 

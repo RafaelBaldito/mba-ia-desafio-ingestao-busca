@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: ${PGVECTOR_TEST_USER:-wave1_test}
+      POSTGRES_PASSWORD: ${PGVECTOR_TEST_PASSWORD:-wave1_test_password}
+      POSTGRES_DB: ${PGVECTOR_TEST_DB:-wave1_test}
+    ports:
+      - "${PGVECTOR_TEST_PORT:-55432}:5432"
+    volumes:
+      - pgvector_integration_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  bootstrap_vector_ext:
+    image: pgvector/pgvector:pg17
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        PGPASSWORD="$${PGVECTOR_TEST_PASSWORD}" psql
+        "postgresql://$${PGVECTOR_TEST_USER}:$${PGVECTOR_TEST_PASSWORD}@postgres:5432/$${PGVECTOR_TEST_DB}"
+        -v ON_ERROR_STOP=1 -c "CREATE EXTENSION IF NOT EXISTS vector;"
+    environment:
+      PGVECTOR_TEST_USER: ${PGVECTOR_TEST_USER:-wave1_test}
+      PGVECTOR_TEST_PASSWORD: ${PGVECTOR_TEST_PASSWORD:-wave1_test_password}
+      PGVECTOR_TEST_DB: ${PGVECTOR_TEST_DB:-wave1_test}
+
+volumes:
+  pgvector_integration_data:
