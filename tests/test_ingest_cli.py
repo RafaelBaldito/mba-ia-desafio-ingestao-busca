@@ -14,7 +14,14 @@ def test_cli_missing_configuration_is_nonzero_and_safe():
     for name in ("OPENAI_API_KEY", "OPENAI_EMBEDDING_MODEL", "DATABASE_URL", "PG_VECTOR_COLLECTION_NAME", "PDF_PATH"):
         environment.pop(name, None)
     result = subprocess.run(
-        [sys.executable, "src/ingest.py"],
+        [
+            sys.executable,
+            "-c",
+            (
+                "import dotenv; dotenv.load_dotenv = lambda *args, **kwargs: False; "
+                "import runpy; runpy.run_path('src/ingest.py', run_name='__main__')"
+            ),
+        ],
         capture_output=True,
         text=True,
         env=environment,
