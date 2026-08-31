@@ -1,5 +1,8 @@
 # Delivery Plan
 
+**Status:** APPROVED
+**Approval record:** 2026-08-30 — explicit human approval
+
 ## 1. Delivery Summary
 
 This plan delivers the approved command-line PDF ingestion and grounded
