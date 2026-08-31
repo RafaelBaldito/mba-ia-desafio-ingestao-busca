@@ -58,7 +58,10 @@ def load_settings(
 ) -> IngestionSettings:
     """Load ``.env`` and validate the five approved ingestion settings."""
 
-    load_dotenv()
+    if repository_root is None:
+        load_dotenv()
+    else:
+        load_dotenv(Path(repository_root) / ".env")
     values = os.environ if environment is None else environment
     api_key = _value(values, "OPENAI_API_KEY")
     model = _value(values, "OPENAI_EMBEDDING_MODEL")
