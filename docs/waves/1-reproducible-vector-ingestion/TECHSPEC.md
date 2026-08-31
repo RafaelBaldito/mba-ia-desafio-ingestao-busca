@@ -1,6 +1,7 @@
 # Technical Specification — Wave 1: Reproducible Vector Ingestion
 
-**Status:** AWAITING_HUMAN_APPROVAL  
+**Status:** APPROVED
+**Approval record:** 2026-08-30 — explicit human approval
 **Scope:** Wave 1 only. This specification implements the ingestion side of
 the shared contracts in [Architecture Overview sections 4–8](../../ARCHITECTURE.md).
 It does not redefine those contracts or design Wave 2.

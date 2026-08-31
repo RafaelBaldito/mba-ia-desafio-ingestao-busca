@@ -1,5 +1,8 @@
 # Architecture Overview
 
+**Status:** APPROVED
+**Approval record:** 2026-08-30 — accepted for Wave 2 planning
+
 ## 1. Purpose and Authority
 
 This document defines the small set of stable architectural boundaries shared

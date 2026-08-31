@@ -1,5 +1,11 @@
 # Tasks — Wave 1: Reproducible Vector Ingestion
 
+**Wave implementation status:** IMPLEMENTED
+
+All five approved Wave 1 tasks are implemented. Their existing task-level
+review artifacts retain the outstanding validation findings recorded at the
+time of review; this index does not represent independent review `PASS`.
+
 ## Scope
 
 Implement only the approved Wave 1 ingestion path: configuration validation,

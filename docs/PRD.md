@@ -2,7 +2,8 @@
 
 **Projeto:** Desafio MBA — Ingestão e Busca Semântica com LangChain e Postgres  
 **Fonte autoritativa:** `docs/input/PROJECT-BRIEF.md`  
-**Status:** AWAITING_HUMAN_APPROVAL
+**Status:** APPROVED
+**Approval record:** 2026-08-30 — explicit human approval
 
 ## 1. Visão geral
 
