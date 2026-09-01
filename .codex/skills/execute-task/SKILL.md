@@ -124,6 +124,12 @@ Identify:
 Do not begin implementation before understanding the complete task
 contract.
 
+Treat approved planning artifacts and the normative content of the selected
+task as immutable execution inputs. Execution authorization does not authorize
+editing requirements, acceptance criteria, validation commands, TECHSPECs,
+architecture decisions, or other approved contracts. If one of those inputs
+must change, report `SPEC_CHANGE_REQUIRED` instead of rewriting it.
+
 ### 2. Load the minimum required context
 
 Read:
@@ -259,6 +265,17 @@ Never claim a command passed unless it was actually executed.
 If a required validation command cannot be executed, report it
 explicitly.
 
+Keep validation purposes distinct:
+
+-   targeted tests demonstrate the selected task's behavior and should not
+    measure unrelated production modules;
+-   project-wide coverage gates run the repository-wide suite against the
+    complete production coverage surface.
+
+If an approved command mixes a targeted test selection with a project-wide
+coverage threshold that cannot be satisfied within task scope, do not alter the
+command. Report `SPEC_CHANGE_REQUIRED` with the exact conflicting command.
+
 ### 10. Handle validation failures
 
 If validation fails because of the implementation created in this task:
@@ -289,7 +306,17 @@ Verify:
 -   tests/config/docs changed only when justified;
 -   task acceptance criteria are represented by the implementation.
 
+Compare approved task and upstream planning artifacts with their pre-execution
+state. Their normative content must be unchanged. Only the selected task's
+status metadata or its index entry may change when repository convention
+requires it.
+
 Remove accidental changes before completing.
+
+Before reporting success, evaluate every acceptance criterion individually.
+For each criterion, record the implementation evidence, test evidence, and
+executed validation that demonstrate it. A criterion without sufficient
+evidence prevents successful completion.
 
 ### 12. Update task status when the repository convention requires it
 
@@ -435,6 +462,12 @@ The completion response must contain:
 - `<command>` — PASS | FAIL | NOT RUN
   - <relevant evidence or reason>
 
+## Acceptance Criteria
+
+| Criterion | Result | Evidence |
+|-----------|--------|----------|
+| <criterion> | PASS / FAIL / NOT VERIFIED | <code, test, and validation evidence> |
+
 ## Files Changed
 
 - `<path>` — <purpose>
@@ -461,6 +494,10 @@ Before reporting completion, verify:
 -   [ ] validation results are reported truthfully;
 -   [ ] failures within task scope were resolved or explicitly reported;
 -   [ ] final changes contain no unrelated edits;
+-   [ ] every acceptance criterion has explicit implementation and validation
+      evidence;
+-   [ ] approved task and upstream planning content is unchanged, except for
+      explicitly authorized status metadata;
 -   [ ] no secrets or unintended generated files were introduced;
 -   [ ] no upstream specification was silently changed;
 -   [ ] no next task or review stage was started automatically.

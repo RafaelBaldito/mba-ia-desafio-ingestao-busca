@@ -281,6 +281,19 @@ Do not claim validation has been executed during task creation.
 
 Do not invent project tooling solely to populate this section.
 
+Keep validation layers semantically separate:
+
+-   targeted task tests validate the behavior owned by the task;
+-   module coverage may target only the production module exercised by those
+    tests when repository tooling supports that form reliably;
+-   project-wide coverage thresholds must run the repository-wide suite over
+    the complete production coverage surface.
+
+Do not combine a narrow test selection with a project-wide coverage target
+unless repository evidence proves the command is satisfiable without testing
+unrelated modules. Before presenting the task set for approval, check each
+specified command for coherent test and coverage scope.
+
 ### 10. Apply task-size discipline
 
 Target per task specification:
@@ -513,6 +526,8 @@ Before completing, verify:
 -   [ ] dependencies are explicit and minimal;
 -   [ ] acceptance criteria are observable;
 -   [ ] validation expectations are actionable;
+-   [ ] targeted test commands and project-wide coverage gates have coherent,
+      distinct scopes;
 -   [ ] Required Context contains only necessary references;
 -   [ ] documentation references preferably stay within the soft target
     of 3;

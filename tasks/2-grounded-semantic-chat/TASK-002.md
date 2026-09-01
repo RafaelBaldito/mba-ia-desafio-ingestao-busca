@@ -1,5 +1,10 @@
 # TASK-002 — Implement Ten-Chunk Retrieval and Mandatory Prompt
 
+**Validation amendment:** APPROVED
+
+**Approval record:** 2026-08-31 — explicit human approval to separate the
+task-targeted behavioral check from the project-wide coverage gate.
+
 ## Objective
 
 Implement the `src/search.py` retrieval boundary and deterministic prompt
@@ -66,7 +71,7 @@ renderer that together produce the only permitted model input.
 
 ## Validation
 
-- `python -m pytest tests/test_search.py --cov=src --cov-report=term-missing --cov-fail-under=90`
+- `python -m pytest tests/test_search.py`
 - `python -m pytest --cov=src --cov-report=term-missing --cov-fail-under=90`
 
 Record executed results and coverage without adding coverage exclusions.

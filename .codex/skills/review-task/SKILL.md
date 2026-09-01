@@ -130,6 +130,9 @@ Read:
 Load additional context only when necessary to validate behavior or
 resolve a potential finding.
 
+For re-review, load the latest review handoff and its prior blocking findings.
+This is required review context, not unrelated review history.
+
 Prefer specific TECHSPEC sections over full documents.
 
 Do not load unrelated Waves, tasks, source files, or project history by
@@ -182,6 +185,23 @@ For each criterion, determine whether it is:
 -   not verifiable with available evidence.
 
 Do not assume a criterion is satisfied merely because tests pass.
+
+Complete the full acceptance-criteria matrix before deciding the result. Do
+not stop after finding the first blocking defect.
+
+Perform a complete-pass review of all applicable acceptance criteria, changed
+files, specification contracts, and deterministic gates. Report every material
+finding identifiable from the current repository state, grouping findings that
+share one root cause.
+
+On re-review:
+
+-   verify every previous blocking finding and record whether it is resolved;
+-   check the complete acceptance matrix again to detect regressions;
+-   do not limit inspection to lines changed by the fix;
+-   mark a pre-existing material defect omitted by the preceding review as
+    `MISSED_IN_PREVIOUS_REVIEW: yes` and explain why it is newly reported;
+-   mark a defect introduced by remediation as `REGRESSION_FROM_FIX: yes`.
 
 ### 6. Review specification compliance
 
@@ -297,6 +317,11 @@ Each finding must include:
 -   suggested fix direction without implementing it.
 
 ### 11. Determine review outcome
+
+Always choose from `PASS`, `FIX_REQUIRED`, `SPEC_CHANGE_REQUIRED`, or
+`BLOCKED` according to the evidence. A request that mentions only a subset of
+these states does not authorize misclassifying a specification conflict or
+blocker as `FIX_REQUIRED`.
 
 Return `PASS` only when:
 
@@ -479,6 +504,8 @@ Return:
 - Evidence: <concrete evidence>
 - Expected: <approved expected behavior>
 - Fix direction: <concise non-implementation guidance>
+- Review provenance: `MISSED_IN_PREVIOUS_REVIEW: yes|no`;
+  `REGRESSION_FROM_FIX: yes|no`
 
 ## Non-Blocking Notes
 
@@ -522,6 +549,11 @@ Return `PASS` when the task is accepted.
 
 Return `FIX_REQUIRED` when one or more implementation defects must be
 corrected within the existing approved task scope.
+
+Do not return `FIX_REQUIRED` when the required correction changes approved
+task requirements, acceptance criteria, validation contracts, TECHSPECs, or
+architecture. Return `SPEC_CHANGE_REQUIRED` even if the invoking prompt lists
+only `PASS` and `FIX_REQUIRED`.
 
 A `PASS` result means the selected task has completed independent
 review.

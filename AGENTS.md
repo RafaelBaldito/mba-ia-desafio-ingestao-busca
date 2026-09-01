@@ -142,10 +142,10 @@ established:
 
 ``` bash
 # Tests
-<project test command>
+python -m pytest
 
 # Coverage
-<project coverage command>
+python -m pytest --cov=src --cov-report=term-missing --cov-fail-under=90
 
 # Lint
 <project lint command>
@@ -159,6 +159,11 @@ established:
 
 Do not invent tooling solely to fill this section. Update these commands
 when the project establishes the corresponding tool.
+
+Targeted task tests validate task-owned behavior. The 90% project coverage
+gate must be evaluated with the project-wide test suite; do not combine a
+narrow test selection with project-wide `--cov=src` unless the resulting
+command is demonstrably coherent.
 
 ## Context Rules for Agents
 
@@ -192,6 +197,12 @@ not a reason to consume unlimited context.
 ## Scope and Change Control
 
 Implementation agents must operate within explicit approved boundaries.
+
+During `execute-task` and `fix-task`, approved PRDs, Delivery Plans,
+Architecture/ADRs, TECHSPECs, and normative task content are immutable. A
+required change to any of these artifacts must produce
+`SPEC_CHANGE_REQUIRED`. Status-only updates remain permitted where the
+repository convention requires them.
 
 `execute-task`:
 

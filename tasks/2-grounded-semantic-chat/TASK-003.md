@@ -61,7 +61,7 @@ prompt construction to the sole approved `gpt-5.4-mini` chat-model input.
 
 ## Validation
 
-- `python -m pytest tests/test_chat.py --cov=src --cov-report=term-missing --cov-fail-under=90`
+- `python -m pytest tests/test_chat.py --cov=src.chat --cov-report=term-missing --cov-fail-under=90`
 - `python -m pytest --cov=src --cov-report=term-missing --cov-fail-under=90`
 
 Record executed results and coverage without excluding the new production code.

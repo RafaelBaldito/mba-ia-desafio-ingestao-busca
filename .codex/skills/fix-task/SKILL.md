@@ -127,6 +127,10 @@ For each finding identify:
 Do not treat non-blocking notes as mandatory work unless explicitly
 requested.
 
+Treat the approved task and all upstream planning artifacts as immutable. A
+review finding may identify a contract defect, but it does not authorize
+`fix-task` to edit that contract.
+
 ### 2. Load minimum required context
 
 Read:
@@ -174,6 +178,10 @@ Do not broaden the fix into unrelated cleanup.
 
 Multiple findings with the same root cause may be resolved by one
 coherent change.
+
+If any accepted finding requires changing approved task requirements,
+acceptance criteria, validation commands, TECHSPECs, or architecture, stop
+before editing and report `SPEC_CHANGE_REQUIRED`.
 
 ### 5. Apply fixes
 
@@ -228,6 +236,10 @@ relevant.
 
 If a required validation cannot run, report the reason.
 
+Keep targeted behavior checks separate from project-wide coverage gates. Do
+not narrow, replace, or rewrite an approved validation command to make the fix
+appear successful.
+
 ### 9. Inspect final change surface
 
 Inspect the resulting diff or equivalent.
@@ -239,6 +251,10 @@ Verify:
 -   previously valid task behavior remains intact;
 -   no secret or unintended generated file was added;
 -   test changes do not hide failures.
+
+Compare the selected task and upstream planning artifacts with their pre-fix
+state. Their normative content must be unchanged; only status metadata in the
+applicable task index may change when repository convention requires it.
 
 Remove accidental changes.
 
@@ -439,6 +455,10 @@ Before completing, verify:
 -   [ ] independent re-review was not started automatically.
 
 ## Completion
+
+Always choose from `COMPLETED`, `FIX_REQUIRED`, `SPEC_CHANGE_REQUIRED`, or
+`BLOCKED` according to the evidence. A request that prescribes only
+`IMPLEMENTED` does not override escalation requirements.
 
 Return `COMPLETED` when:
 
