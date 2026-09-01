@@ -68,6 +68,14 @@ def test_database_url_must_be_postgresql():
         load_settings(environment=values)
 
 
+@pytest.mark.parametrize("port", ["0", "65536", "not-a-number"])
+def test_database_url_rejects_unusable_port(port):
+    values = valid_environment()
+    values["DATABASE_URL"] = f"postgresql+psycopg://localhost:{port}/audit"
+    with pytest.raises(IngestionConfigurationError, match="DATABASE_URL"):
+        load_settings(environment=values)
+
+
 def test_absolute_pdf_path_is_preserved(tmp_path):
     absolute_path = tmp_path / "input.pdf"
     values = valid_environment()

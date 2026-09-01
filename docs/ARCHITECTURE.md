@@ -1,7 +1,8 @@
 # Architecture Overview
 
 **Status:** APPROVED
-**Approval record:** 2026-08-30 — accepted for Wave 2 planning
+**Approval record:** 2026-08-30 — accepted for Wave 2 planning; amended
+2026-09-01 — explicit human approval
 
 ## 1. Purpose and Authority
 
@@ -83,7 +84,7 @@ The stable configuration categories are:
 | --- | --- | --- |
 | OpenAI authentication | A secret API key is supplied only through the runtime environment. | `OPENAI_API_KEY` is templated in `.env.example`. |
 | Embedding provider | The approved embedding model is `text-embedding-3-small`. | `OPENAI_EMBEDDING_MODEL` is templated with that value. |
-| Chat provider | The answer-generation model is `gpt-5.4-mini`. | The PRD defines it; the current template does not yet expose a chat-model setting. |
+| Chat provider | The answer-generation model is `gpt-5.4-mini`. | `OPENAI_CHAT_MODEL` is templated with that value. |
 | Database | A PostgreSQL connection location is supplied by configuration, not inferred from code. | `DATABASE_URL` is templated. |
 | Vector namespace | The target logical collection is explicitly named in configuration. | `PG_VECTOR_COLLECTION_NAME` is templated. |
 | Source document | The PDF input path is configurable; the approved delivered corpus is `document.pdf`. | `PDF_PATH` is templated and `document.pdf` is present at repository root. |

@@ -1,7 +1,8 @@
 # Technical Specification — Wave 2: Grounded Semantic Chat
 
 **Status:** APPROVED  
-**Approval record:** 2026-08-31 — explicit human approval  
+**Approval record:** 2026-08-31 — explicit human approval; amended
+2026-09-01 — explicit human approval
 **Scope:** Wave 2 only. This specification implements the retrieval, grounded
 answering, and terminal-chat side of the contracts in
 [`docs/ARCHITECTURE.md`](../../ARCHITECTURE.md). It neither changes the Wave 1
@@ -247,7 +248,9 @@ Implementation in this wave updates only the directly affected documentation:
 
 - `.env.example` adds `OPENAI_CHAT_MODEL='gpt-5.4-mini'`, retains only
   placeholders/safe non-secret examples, and documents the existing OpenAI,
-  database, collection, and PDF settings consistently. It must not add Gemini
+  database, collection, and PDF settings consistently. This is an approved
+  Wave 2 extension of the shared template, not a change to Wave 1's five
+  `IngestionSettings` values or validation semantics. It must not add Gemini
   settings.
 - `README.md` documents prerequisites (Python environment, Docker Compose,
   OpenAI key), copying `.env.example` to `.env`, `docker compose up -d`,

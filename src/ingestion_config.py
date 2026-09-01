@@ -47,8 +47,16 @@ def _value(environment: dict[str, str], name: str) -> str:
 
 
 def _database_url(value: str) -> str:
-    parsed = urlsplit(value)
-    if parsed.scheme not in {"postgresql", "postgres", "postgresql+psycopg"} or not parsed.hostname:
+    try:
+        parsed = urlsplit(value)
+        port = parsed.port
+    except ValueError as error:
+        raise IngestionConfigurationError("Invalid or unsafe setting: DATABASE_URL") from error
+    if (
+        parsed.scheme not in {"postgresql", "postgres", "postgresql+psycopg"}
+        or not parsed.hostname
+        or (port is not None and not 1 <= port <= 65535)
+    ):
         raise IngestionConfigurationError("Invalid or unsafe setting: DATABASE_URL")
     return value
 

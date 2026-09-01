@@ -42,17 +42,20 @@ collaborator can be constructed.
   the PDF service.
 - Configuration failures must identify only the affected setting and never
   include secret values or credential-bearing database URLs.
-- Update `.env.example` to contain only the five approved Wave 1 settings with
-  placeholders or safe local examples. Remove Google/Gemini packages and
-  entries that contradict the approved provider boundary; retain required
+- Update `.env.example` to contain the five approved Wave 1 settings with
+  placeholders or safe local examples. A later explicitly approved Wave may
+  add its own OpenAI model setting to the shared template without changing the
+  `IngestionSettings` contract. Remove Google/Gemini packages and entries that
+  contradict the approved provider boundary; retain required
   LangChain/OpenAI/Postgres/PDF runtime dependencies.
 - Establish a `tests/` layout and tests that exercise configuration behavior
   without OpenAI, Docker, or PostgreSQL.
 
 ## Constraints
 
-- Do not add a chat-model setting, retrieval settings, Gemini compatibility,
-  or any Wave 2 behavior.
+- Do not add a chat-model setting to `IngestionSettings`, retrieval settings,
+  Gemini compatibility, or any Wave 2 behavior. A separately approved Wave 2
+  template-only `OPENAI_CHAT_MODEL` entry is permitted in `.env.example`.
 - Do not embed, print, or commit a real secret or credential-bearing URL.
 - Do not exclude relevant `src` production modules from coverage.
 
@@ -63,8 +66,9 @@ collaborator can be constructed.
   PDF path without exposing secrets in its normal representation or errors.
 - Missing/empty required settings and a non-approved embedding model raise a
   typed configuration error before any external collaborator is constructed.
-- `.env.example` contains exactly the approved Wave 1 setting categories and
-  no Google/Gemini setting.
+- `.env.example` contains the five approved Wave 1 setting categories, any
+  separately approved Wave 2 chat-model template entry, and no Google/Gemini
+  setting.
 - The declared pytest command is runnable and enforces project coverage of at
   least 90% without coverage exclusions for production behavior.
 

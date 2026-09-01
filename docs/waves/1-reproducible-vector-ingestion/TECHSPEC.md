@@ -1,7 +1,8 @@
 # Technical Specification — Wave 1: Reproducible Vector Ingestion
 
 **Status:** APPROVED
-**Approval record:** 2026-08-30 — explicit human approval
+**Approval record:** 2026-08-30 — explicit human approval; amended
+2026-09-01 — explicit human approval
 **Scope:** Wave 1 only. This specification implements the ingestion side of
 the shared contracts in [Architecture Overview sections 4–8](../../ARCHITECTURE.md).
 It does not redefine those contracts or design Wave 2.
@@ -139,13 +140,16 @@ Required environment variables and validation:
 | `PG_VECTOR_COLLECTION_NAME` | Required non-empty logical collection identifier; use unchanged for ingestion and later retrieval. |
 | `PDF_PATH` | Required path to the delivered `document.pdf`; resolve relative to the repository working directory and validate before provider/store construction. |
 
-Update `.env.example` to retain only these Wave 1 OpenAI/database/collection/PDF
-settings with placeholders or safe local examples; remove Google/Gemini
-variables and dependencies because they contradict the approved provider
-boundary. Retain the current Compose database and extension bootstrap unless
-validation reveals a concrete incompatibility. The Wave 1 smoke procedure
-requires Compose's PostgreSQL health check and extension bootstrap to have
-completed before running ingestion.
+Update `.env.example` to retain these five Wave 1
+OpenAI/database/collection/PDF settings with placeholders or safe local
+examples; remove Google/Gemini variables and dependencies because they
+contradict the approved provider boundary. An explicitly approved downstream
+Wave may add its own OpenAI model setting to the shared template, provided it
+does not alter the five-setting `IngestionSettings` contract or introduce a
+second provider. Retain the current Compose database and extension bootstrap
+unless validation reveals a concrete incompatibility. The Wave 1 smoke
+procedure requires Compose's PostgreSQL health check and extension bootstrap
+to have completed before running ingestion.
 
 ## 6. Error and operational behavior
 

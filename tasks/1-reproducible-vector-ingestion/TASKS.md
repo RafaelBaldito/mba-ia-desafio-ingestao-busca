@@ -18,7 +18,7 @@ excluded.
 
 | Task | Title | Depends On | Status |
 | --- | --- | --- | --- |
-| TASK-001 | Establish Ingestion Configuration and Test Foundation | — | COMPLETED |
+| TASK-001 | Establish Ingestion Configuration and Test Foundation | — | IMPLEMENTED |
 | TASK-002 | Implement Deterministic PDF Loading and Chunking | TASK-001 | COMPLETED |
 | TASK-003 | Implement Embedding and pgVector Persistence Adapters | TASK-001, TASK-002 | COMPLETED |
 | TASK-004 | Implement the Ingestion Orchestrator and CLI | TASK-001, TASK-002, TASK-003 | COMPLETED |

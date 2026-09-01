@@ -47,3 +47,54 @@ FIX_REQUIRED
 ## Summary
 
 The configuration implementation and its focused tests are sound, but the task cannot pass because the mandated coverage gate is artificially satisfied through exclusions and the required import validation fails. No production code or tests were modified during review.
+
+---
+
+## Re-review Result — 2026-09-01
+
+## Review Result
+
+FIX_REQUIRED
+
+## Task
+
+`TASK-001 — Establish Ingestion Configuration and Test Foundation`
+
+## Previous Findings
+
+| Finding | Disposition | Evidence |
+|---|---|---|
+| FINDING-001 — Coverage gate excludes production modules | RESOLVED | The current full repository command reports all eight `src` modules and passes at 96.44%; no coverage omission configuration is present. |
+| FINDING-002 — Required import validation is not runnable | RESOLVED | `python -c "import ingest; import ingestion_config"` exited successfully from the repository root. |
+
+## Validation
+
+| Check | Result | Evidence |
+|---|---|---|
+| `python -m pytest --cov=src --cov-report=term-missing --cov-fail-under=90` | PASS | 113 passed, 2 skipped; 96.44% total coverage. |
+| `python -c "import ingest; import ingestion_config"` | PASS | Exit code 0 from the repository root. |
+| Ingestion URL validation probe | FAIL | `load_settings(environment=...)` accepted `postgresql+psycopg://localhost:0/audit`. |
+
+## Acceptance Criteria
+
+| Criterion | Result | Evidence |
+|---|---|---|
+| Valid environment yields safe resolved settings | PASS | `tests/test_ingestion_config.py` passes; configuration representation redacts the API key and database URL. |
+| Missing, empty, or unsafe settings fail before external collaborators | FAIL | Port `0` is an unusable PostgreSQL endpoint but is accepted as a valid `DATABASE_URL`. |
+| `.env.example` contains only approved Wave 1 settings and no Gemini option | PASS | The template declares the five ingestion settings plus the approved Wave 2 chat-model setting; it contains no Gemini configuration. |
+| Declared coverage command is runnable and enforces project-wide coverage without exclusions | PASS | The repository-wide command passed at 96.44%. |
+
+## Findings
+
+### FINDING-003 — MEDIUM — Ingestion settings accept an unusable PostgreSQL port
+
+- Location: `src/ingestion_config.py:_database_url`; `tests/test_ingestion_config.py`
+- Issue: Database URL validation checks scheme and hostname but does not reject port `0`.
+- Evidence: The re-review probe returned `postgresql+psycopg://localhost:0/audit` as a valid setting. `src/chat_config.py` already rejects ports outside `1..65535`.
+- Expected: An unusable required database setting must fail safely before PDF, OpenAI, or pgVector work begins.
+- Fix direction: Parse and validate the optional PostgreSQL port as `1..65535`, safely convert malformed-port failures to `IngestionConfigurationError`, and add a regression test.
+- Review provenance: `MISSED_IN_PREVIOUS_REVIEW: yes`; `REGRESSION_FROM_FIX: no`.
+
+## Summary
+
+The original coverage and import findings are resolved, and the task's deterministic validation passes. TASK-001 remains `FIX_REQUIRED` because it accepts an unusable database endpoint in violation of the approved configuration boundary. No production code or tests were modified during this re-review.
