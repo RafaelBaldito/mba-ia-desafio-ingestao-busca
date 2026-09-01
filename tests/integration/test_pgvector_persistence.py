@@ -7,6 +7,7 @@ import socket
 import subprocess
 import time
 import uuid
+from math import cos, radians, sin
 from pathlib import Path
 
 import psycopg
@@ -15,6 +16,8 @@ from langchain_core.documents import Document
 
 from src.ingestion_config import APPROVED_EMBEDDING_MODEL, IngestionSettings
 from src.ingestion_store import COLLECTION_METADATA, EMBEDDING_LENGTH, persist_chunks
+from src.search import retrieve
+from src.chat_config import APPROVED_CHAT_MODEL, ChatSettings
 
 
 COMPOSE_FILE = Path(__file__).with_name("compose.yaml")
@@ -40,9 +43,18 @@ def _docker_available() -> bool:
 class DeterministicEmbeddings:
     """A local 1536-dimensional embedding implementation for database tests."""
 
+    last_kwargs: dict[str, str] = {}
+
+    def __init__(self, **kwargs):
+        type(self).last_kwargs = kwargs
+
     def _vector(self, text: str) -> list[float]:
-        seed = sum(ord(character) for character in text) % 997
-        return [1.0 + seed / 997.0] + [0.0] * (EMBEDDING_LENGTH - 1)
+        if text == "find the closest integration documents":
+            angle = 0.0
+        else:
+            rank = int(text.removeprefix("integration document "))
+            angle = radians(rank)
+        return [cos(angle), sin(angle)] + [0.0] * (EMBEDDING_LENGTH - 2)
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
         return [self._vector(text) for text in texts]
@@ -132,18 +144,15 @@ def test_pgvector_persists_retrievable_text_embeddings_and_collection(isolated_p
     embedding = DeterministicEmbeddings()
     documents = [
         Document(
-            page_content="first integration document",
-            metadata={"source": "document.pdf", "chunk_index": 0},
-        ),
-        Document(
-            page_content="second integration document",
-            metadata={"source": "document.pdf", "chunk_index": 1},
-        ),
+            page_content=f"integration document {index}",
+            metadata={"source": "document.pdf", "chunk_index": index},
+        )
+        for index in range(12)
     ]
 
     count = persist_chunks(settings, documents, embedding)
 
-    assert count == 2
+    assert count == 12
     psycopg_url = settings.database_url.replace("postgresql+psycopg://", "postgresql://", 1)
     with psycopg.connect(psycopg_url) as connection:
         with connection.cursor() as cursor:
@@ -156,8 +165,30 @@ def test_pgvector_persists_retrievable_text_embeddings_and_collection(isolated_p
             )
             rows = cursor.fetchall()
 
-    assert {(row[0], row[1], row[2]) for row in rows} == {
-        ("first integration document", EMBEDDING_LENGTH, settings.collection_name),
-        ("second integration document", EMBEDDING_LENGTH, settings.collection_name),
-    }
+    assert len(rows) == 12
+    assert {row[1] for row in rows} == {EMBEDDING_LENGTH}
+    assert {row[2] for row in rows} == {settings.collection_name}
     assert COLLECTION_METADATA["embedding_model"] == APPROVED_EMBEDDING_MODEL
+
+    chat_settings = ChatSettings(
+        openai_api_key="integration-test-key",
+        openai_embedding_model=APPROVED_EMBEDDING_MODEL,
+        openai_chat_model=APPROVED_CHAT_MODEL,
+        database_url=settings.database_url,
+        collection_name=settings.collection_name,
+    )
+    retrieved = retrieve(
+        "find the closest integration documents",
+        chat_settings,
+        embedding_factory=DeterministicEmbeddings,
+    )
+
+    assert len(retrieved) == 10
+    assert [chunk.page_content for chunk in retrieved] == [
+        f"integration document {index}" for index in range(10)
+    ]
+    assert [chunk.score for chunk in retrieved] == sorted(chunk.score for chunk in retrieved)
+    assert DeterministicEmbeddings.last_kwargs == {
+        "model": APPROVED_EMBEDDING_MODEL,
+        "api_key": "integration-test-key",
+    }

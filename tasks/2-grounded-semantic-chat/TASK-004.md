@@ -70,10 +70,14 @@ document the complete reproducible operator workflow.
 
 ## Validation
 
-- `python -m pytest tests/test_chat.py --cov=src --cov-report=term-missing --cov-fail-under=90`
+- `python -m pytest tests/test_chat.py`
 - `python -m pytest --cov=src --cov-report=term-missing --cov-fail-under=90`
 - `python -c "import src.search; import src.chat"`
 - `docker compose config`
+
+**Validation amendment approval:** 2026-09-01 — explicit human approval.
+The targeted CLI test and project-wide coverage commands above replace the
+previous incoherent targeted-coverage command.
 
 Run only applicable commands and record actual outcomes. Do not perform the
 credentialed manual smoke test as a substitute for automated validation.

@@ -18,8 +18,8 @@ ingestion/persistence contract nor adds a future delivery scope.
 | TASK-001 | Establish Secure Chat Configuration | — | PASS |
 | TASK-002 | Implement Ten-Chunk Retrieval and Mandatory Prompt | TASK-001 | PASS |
 | TASK-003 | Implement Grounded Answer Orchestration | TASK-001, TASK-002 | PASS |
-| TASK-004 | Deliver the Repeatable Chat CLI and Operator Guide | TASK-001, TASK-002, TASK-003 | PENDING |
-| TASK-005 | Verify pgVector Retrieval Integration and Release Quality Gate | TASK-002, TASK-003, TASK-004 | PENDING |
+| TASK-004 | Deliver the Repeatable Chat CLI and Operator Guide | TASK-001, TASK-002, TASK-003 | PASS |
+| TASK-005 | Verify pgVector Retrieval Integration and Release Quality Gate | TASK-002, TASK-003, TASK-004 | PASS |
 
 ## Coverage
 
