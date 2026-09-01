@@ -15,7 +15,7 @@ ingestion/persistence contract nor adds a future delivery scope.
 
 | Task | Title | Depends On | Status |
 | --- | --- | --- | --- |
-| TASK-001 | Establish Secure Chat Configuration | — | PENDING |
+| TASK-001 | Establish Secure Chat Configuration | — | PASS |
 | TASK-002 | Implement Ten-Chunk Retrieval and Mandatory Prompt | TASK-001 | PENDING |
 | TASK-003 | Implement Grounded Answer Orchestration | TASK-001, TASK-002 | PENDING |
 | TASK-004 | Deliver the Repeatable Chat CLI and Operator Guide | TASK-001, TASK-002, TASK-003 | PENDING |
