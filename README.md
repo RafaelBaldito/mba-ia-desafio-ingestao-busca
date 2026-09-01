@@ -1,85 +1,167 @@
-# Desafio MBA Engenharia de Software com IA - Full Cycle
+# PDF RAG Assistant
 
-## Pré-requisitos
+> A command-line Retrieval-Augmented Generation (RAG) assistant that turns a PDF into a searchable knowledge base and produces answers grounded in its content.
 
-- Python com um ambiente virtual que tenha as dependências de `requirements.txt` instaladas.
-- Docker e Docker Compose.
-- Uma chave da OpenAI com acesso aos modelos configurados.
-- O arquivo `document.pdf` na raiz do repositório.
+[![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-API-412991?logo=openai&logoColor=white)](https://platform.openai.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-pgvector-4169E1?logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![LangChain](https://img.shields.io/badge/LangChain-Framework-1C3C3C)](https://www.langchain.com/)
 
-## Configuração e execução
+## Overview
 
-1. Crie e ative o ambiente Python, depois instale as dependências:
+PDF RAG Assistant ingests a local PDF, splits it into overlapping chunks, creates OpenAI embeddings, and stores them in PostgreSQL with pgvector. At query time, it retrieves the ten most relevant chunks and uses them as the only context for the generated answer.
 
-   ```bash
-   python -m venv .venv
-   # Linux/macOS
-   . .venv/bin/activate
-   # Windows PowerShell
-   .venv\Scripts\Activate.ps1
-   python -m pip install -r requirements.txt
-   ```
+The result is a focused, reproducible command-line workflow for exploring document content without relying on external knowledge.
 
-2. Copie o modelo seguro de configuração e preencha somente os valores locais:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   Em Windows PowerShell, use `Copy-Item .env.example .env`. Defina `OPENAI_API_KEY`
-   em `.env`; mantenha os identificadores de modelo fornecidos no template e configure
-   `DATABASE_URL` e `PG_VECTOR_COLLECTION_NAME` para o banco local. Não versione `.env`.
-
-3. Inicie o PostgreSQL com pgVector e aguarde o serviço ficar saudável, incluindo a
-   conclusão de `bootstrap_vector_ext`:
-
-   ```bash
-   docker compose up -d
-   docker compose ps
-   ```
-
-4. Com o banco pronto, ingira o PDF fornecido. Esta etapa é obrigatória antes do chat:
-
-   ```bash
-   python src/ingest.py
-   ```
-
-   O chat exige que `document.pdf` tenha sido ingerido na coleção configurada e que a
-   recuperação encontre exatamente dez chunks. Uma coleção indisponível ou com menos de
-   dez chunks não produz resposta.
-
-5. Inicie o chat:
-
-   ```bash
-   python src/chat.py
-   ```
-
-## Uso do chat
-
-O terminal mostra `Faça sua pergunta:` e aceita uma pergunta por vez em `PERGUNTA: `.
-Cada pergunta é independente: não há histórico de conversa.
-
-Exemplo de pergunta fundamentada no PDF (substitua pelo assunto efetivamente presente
-em `document.pdf`):
-
-```text
-PERGUNTA: Qual informação o documento apresenta sobre <assunto do PDF>?
-RESPOSTA: <resposta baseada nos chunks recuperados>
+```mermaid
+flowchart LR
+    A[PDF document] --> B[Load and split into chunks]
+    B --> C[OpenAI embeddings]
+    C --> D[(PostgreSQL + pgvector)]
+    E[User question] --> F[Semantic retrieval]
+    D --> F
+    F --> G[10 relevant chunks]
+    G --> H[Grounded OpenAI answer]
 ```
 
-Exemplo de pergunta fora do contexto:
+## Highlights
+
+- **Reproducible ingestion** — replaces the configured collection with the current PDF content.
+- **Semantic retrieval** — uses vector similarity to retrieve exactly ten relevant chunks per question.
+- **Grounded responses** — prompts the model to answer solely from retrieved document context.
+- **Safe configuration** — validates required settings and avoids exposing API keys or connection strings in errors.
+- **Simple local stack** — runs PostgreSQL and pgvector through Docker Compose.
+
+## Tech Stack
+
+| Layer | Technology |
+| --- | --- |
+| Language | Python |
+| Document processing | PyPDF / LangChain |
+| Embeddings and chat | OpenAI API |
+| Vector storage | PostgreSQL + pgvector |
+| Orchestration | LangChain |
+| Local infrastructure | Docker Compose |
+
+## Getting Started
+
+### Prerequisites
+
+- Python with `pip`
+- Docker and Docker Compose
+- An OpenAI API key with access to the configured models
+- A PDF file available locally (the default path is `document.pdf` at the repository root)
+
+### 1. Create the Python environment
+
+```bash
+python -m venv .venv
+
+# Linux/macOS
+. .venv/bin/activate
+
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+
+python -m pip install -r requirements.txt
+```
+
+### 2. Configure local environment variables
+
+Create your local configuration file:
+
+```bash
+# Linux/macOS
+cp .env.example .env
+
+# Windows PowerShell
+Copy-Item .env.example .env
+```
+
+Then update `.env` with your local credentials and database connection. Never commit this file.
+
+| Variable | Purpose | Required value / example |
+| --- | --- | --- |
+| `OPENAI_API_KEY` | Authenticates requests to OpenAI | Your local API key |
+| `OPENAI_EMBEDDING_MODEL` | Embedding model used for ingestion and search | `text-embedding-3-small` |
+| `OPENAI_CHAT_MODEL` | Chat model used to answer questions | `gpt-5.4-mini` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql+psycopg://postgres:postgres@localhost:5432/rag` |
+| `PG_VECTOR_COLLECTION_NAME` | Target pgvector collection | A valid local collection name |
+| `PDF_PATH` | Source document path | `document.pdf` |
+
+### 3. Start PostgreSQL with pgvector
+
+```bash
+docker compose up -d
+docker compose ps
+```
+
+Wait for `postgres` to become healthy and for `bootstrap_vector_ext` to finish successfully.
+
+### 4. Ingest the PDF
+
+```bash
+python src/ingest.py
+```
+
+The ingestion step must complete before the chat can answer questions.
+
+### 5. Start the assistant
+
+```bash
+python src/chat.py
+```
+
+## Usage
+
+The terminal accepts one independent question at a time. Ask about information present in the ingested PDF:
 
 ```text
-PERGUNTA: Qual é a capital da França?
+PERGUNTA: What information does the document provide about <topic>?
+RESPOSTA: <answer based on the retrieved chunks>
+```
+
+Questions that cannot be supported by the retrieved context receive the fallback response:
+
+```text
+PERGUNTA: What is the capital of France?
 RESPOSTA: Não tenho informações necessárias para responder sua pergunta.
 ```
 
-Para encerrar, envie `sair`, `exit` ou `quit`, ou use EOF/`Ctrl+C`. O programa responde
-com `Chat encerrado.`. Uma pergunta vazia pede uma nova entrada; falhas temporárias de
-banco ou OpenAI são exibidas de forma segura e permitem tentar outra pergunta.
+To finish the session, enter `sair`, `exit`, or `quit`, or use `Ctrl+C` / EOF. An empty question requests a new input, and temporary service failures are handled safely so another question can be attempted.
 
-## Entrega
+## How It Works
 
-No momento da liberação, o repositório desta entrega deve estar público no GitHub.
-Essa verificação de publicação faz parte da operação de release e não é executada por
-estes comandos locais.
+1. The ingestion command loads the configured PDF and splits it into overlapping chunks.
+2. Each chunk is transformed into a vector embedding and persisted in the selected pgvector collection.
+3. For every question, the application performs similarity search and validates that ten chunks are available.
+4. The chat model receives the question together with those chunks and is instructed not to use information outside them.
+
+## Project Structure
+
+```text
+src/
+├── ingest.py                  # Ingestion CLI entry point
+├── ingestion_*.py             # Configuration, document, and storage workflow
+├── chat.py                    # Interactive chat CLI
+├── chat_config.py             # Chat configuration validation
+└── search.py                  # Retrieval and grounded prompt construction
+
+docker-compose.yml             # PostgreSQL + pgvector local stack
+.env.example                   # Configuration template
+```
+
+## Validation
+
+Run the automated test suite:
+
+```bash
+python -m pytest
+```
+
+Run the project coverage gate:
+
+```bash
+python -m pytest --cov=src --cov-report=term-missing --cov-fail-under=90
+```
