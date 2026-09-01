@@ -2,6 +2,10 @@
 
 ## Objective
 
+> **Validation amendment (2026-09-01):** explicit human approval. Targeted
+> tests demonstrate task-owned behavior; the 90% project coverage gate is
+> evaluated only by the full-suite command below.
+
 Implement the isolated PDF/chunk service that converts the one configured PDF
 into validated deterministic LangChain `Document` chunks before any persistence
 operation.
@@ -63,10 +67,10 @@ operation.
 
 ## Validation
 
-- `python -m pytest tests/test_ingestion_document.py --cov=src --cov-report=term-missing --cov-fail-under=90`
+- `python -m pytest tests/test_ingestion_document.py`
 - `python -m pytest --cov=src --cov-report=term-missing --cov-fail-under=90`
 
-Record targeted and full-suite results, including coverage. If the full-suite
+Record targeted and full-suite results, including project-wide coverage. If the full-suite
 gate cannot yet pass solely because dependent production modules are not
 implemented, record that fact accurately for the next task; do not exclude
 them from coverage.

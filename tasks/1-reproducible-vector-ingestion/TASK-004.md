@@ -2,6 +2,10 @@
 
 ## Objective
 
+> **Validation amendment (2026-09-01):** explicit human approval. Targeted
+> tests demonstrate task-owned behavior; the 90% project coverage gate is
+> evaluated only by the full-suite command below.
+
 Connect the approved configuration, document, and persistence components into
 a testable `ingest(settings) -> IngestionResult` operation and the required
 safe `python src/ingest.py` command.
@@ -68,7 +72,7 @@ safe `python src/ingest.py` command.
 
 ## Validation
 
-- `python -m pytest tests/test_ingestion_orchestrator.py tests/test_ingest_cli.py --cov=src --cov-report=term-missing --cov-fail-under=90`
+- `python -m pytest tests/test_ingestion_orchestrator.py tests/test_ingest_cli.py`
 - `python -m pytest --cov=src --cov-report=term-missing --cov-fail-under=90`
 - `python src/ingest.py` with deliberately missing required configuration,
   verifying a non-zero exit and no secret exposure

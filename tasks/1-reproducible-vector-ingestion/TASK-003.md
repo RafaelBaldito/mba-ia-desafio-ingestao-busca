@@ -2,6 +2,10 @@
 
 ## Objective
 
+> **Validation amendment (2026-09-01):** explicit human approval. Targeted
+> tests demonstrate task-owned behavior; the 90% project coverage gate is
+> evaluated only by the full-suite command below.
+
 Implement injectable LangChain adapters that create the approved embedding and
 pgVector collection configuration, then replace and persist the validated
 chunk corpus with stable IDs.
@@ -66,7 +70,7 @@ chunk corpus with stable IDs.
 
 ## Validation
 
-- `python -m pytest tests/test_ingestion_store.py --cov=src --cov-report=term-missing --cov-fail-under=90`
+- `python -m pytest tests/test_ingestion_store.py`
 - `python -m pytest --cov=src --cov-report=term-missing --cov-fail-under=90`
 - `python -c "import ingestion_store"`
 
